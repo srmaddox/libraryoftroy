@@ -1,15 +1,13 @@
-// src/app/services/AuthService.ts - Improved with better error handling
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { Customer } from '../model/Customer';
-import { IdentityLoginRequest } from '../dtos/requests/IdentityLoginRequest';
-import { IdentityRegistrationRequest } from '../dtos/requests/IdentityRegistrationRequest';
-import { AuthResponse } from '../dtos/responses/AuthResponse';
-import { IdentityResult } from '../dtos/responses/IdentityResult';
+import { Customer } from '../model/customer';
+import { IdentityLoginRequest } from '../dtos/requests/identity-login-request';
+import { IdentityRegistrationRequest } from '../dtos/requests/identity-registration-request';
+import { AuthResponse } from '../dtos/responses/auth-response';
+import { IdentityResult } from '../dtos/responses/identity-result';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +37,6 @@ export class AuthService {
         return false;
       }
 
-      // Check if token is expired
       const expirationDate = new Date(expiration);
       if (new Date() > expirationDate) {
         this.logout();
@@ -81,11 +78,9 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiBaseUrl}/login`, request)
       .pipe(
         tap(response => {
-          // Store auth data
           localStorage.setItem(this.authTokenKey, response.token);
           localStorage.setItem(this.authExpKey, response.expiration.toString());
 
-          // Create and store user
           const customer = Customer.Factory.fromAuthResponse(response);
           this.currentUserSubject.next(customer);
         }),
@@ -104,7 +99,6 @@ export class AuthService {
     this.navigateToHome();
   }
   private navigateToHome(): void {
-    // Navigate to the home route with all necessary outlets
     this.router.navigate([{
       outlets: {
         headerPane: ['nav-header'],
@@ -127,7 +121,6 @@ export class AuthService {
       );
   }
 
-  // Get the JWT token for API requests
   public getAuthToken(): string | null {
     try {
       return localStorage.getItem(this.authTokenKey);
@@ -137,7 +130,6 @@ export class AuthService {
     }
   }
 
-  // Add auth header to HTTP requests
   public getAuthHeaders(): HttpHeaders {
     const token = this.getAuthToken();
     if (token) {
@@ -151,7 +143,6 @@ export class AuthService {
     });
   }
 
-  // Load user from stored token on app start
   private loadUserFromStoredToken(): void {
     try {
       const token = localStorage.getItem(this.authTokenKey);
@@ -165,11 +156,9 @@ export class AuthService {
           return;
         }
 
-        // Decode token to get user info
         const tokenPayload = this.parseJwt(token);
 
         if (tokenPayload) {
-          // Convert token payload to AuthResponse format
           const authResponse: AuthResponse = {
             token: token,
             expiration: expirationDate,
@@ -182,7 +171,6 @@ export class AuthService {
             }
           };
 
-          // Create user from auth response
           const customer = Customer.Factory.fromAuthResponse(authResponse);
           this.currentUserSubject.next(customer);
         }
@@ -193,7 +181,6 @@ export class AuthService {
     }
   }
 
-  // Helper function to parse JWT
   private parseJwt(token: string): any {
     try {
       const base64Url = token.split('.')[1];
@@ -211,9 +198,7 @@ export class AuthService {
     }
   }
 
-  // Extract roles from token payload
   private extractRoles(tokenPayload: any): string[] {
-    // Roles can be in different formats based on the token structure
     const roleKey = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
     try {

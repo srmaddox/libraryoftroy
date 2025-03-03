@@ -1,8 +1,8 @@
-import {IUser} from './IUser';
-import {Guid} from './uuid';
-import {AuthResponse} from '../dtos/responses/AuthResponse';
+import {User} from './user';
+import {Guid} from './guid';
+import {AuthResponse} from '../dtos/responses/auth-response';
 
-export class Customer implements IUser{
+export class Customer implements User{
   private id: Guid;
   private userName: string;
   private displayName: string;
@@ -31,11 +31,10 @@ export class Customer implements IUser{
     return this.roles;
   }
 
-  // Nested Factory class
   static Factory = class {
     static fromAuthResponse(response: AuthResponse): Customer {
       return new Customer(
-        response.user.id as unknown as Guid, // May need conversion depending on Guid implementation
+        response.user.id as unknown as Guid,
         response.user.userName,
         response.user.displayName || response.user.userName,
         response.user.roles

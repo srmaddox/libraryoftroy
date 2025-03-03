@@ -4,9 +4,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BookDetailResponse } from '../../dtos/responses/BookDetailResponse';
-import { AppEventManager } from '../../services/AppEventManager';
-import { AuthService } from '../../services/AuthService';
+import { BookDetailResponse } from '../../dtos/responses/book-detail-response';
+import { AppEventManager } from '../../services/app-event-manager';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-overlay-details',

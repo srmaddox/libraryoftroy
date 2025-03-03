@@ -1,12 +1,10 @@
-﻿
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-
 
 namespace LibraryOfTroyApi.Model;
 
 [Table ( "Customers" )]
-public record Customer : IUser {
+public record Customer : User {
     [Key]
     public Guid Id { get; init; }
 
@@ -17,7 +15,7 @@ public record Customer : IUser {
         throw new NotImplementedException ( );
     }
 
-    public IUser.Role GetRoles ( ) {
+    public User.Role GetRoles ( ) {
         throw new NotImplementedException ( );
     }
 

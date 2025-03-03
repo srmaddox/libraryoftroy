@@ -1,5 +1,5 @@
-import { Guid } from './uuid';
-import {Book} from './Book';
+import { Guid } from './guid';
+import {Book} from './book';
 
 export interface CustomerReview {
   id: Guid;

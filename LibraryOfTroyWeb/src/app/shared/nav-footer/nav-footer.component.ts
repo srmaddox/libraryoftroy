@@ -2,8 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AppEventManager } from '../../services/AppEventManager';
-import { AuthService } from '../../services/AuthService';
+import { AppEventManager } from '../../services/app-event-manager';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-nav-footer',

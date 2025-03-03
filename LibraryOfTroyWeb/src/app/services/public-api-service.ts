@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Guid } from '../model/uuid';
-import { Book } from '../model/Book';
-import { BookDetailResponse } from '../dtos/responses/BookDetailResponse';
-import { BookDetailAndReviewsResponse } from '../dtos/responses/BookDetailAndReviewsResponse';
+import { Guid } from '../model/guid';
+import { BookDetailResponse } from '../dtos/responses/book-detail-response';
+import { BookDetailAndReviewsResponse } from '../dtos/responses/book-detail-and-reviews-response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +14,6 @@ export class PublicApiService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Retrieves a specific book by its unique identifier
-   */
   getBook(bookId: Guid): Observable<BookDetailResponse | null> {
     return this.http.get<BookDetailResponse>(`${this.apiUrl}/Books/${bookId}`)
       .pipe(
@@ -25,9 +21,6 @@ export class PublicApiService {
       );
   }
 
-  /**
-   * Gets reviews for a specific book
-   */
   getBookReviews(bookId: Guid): Observable<BookDetailAndReviewsResponse | null> {
     return this.http.get<BookDetailAndReviewsResponse>(`${this.apiUrl}/Books/${bookId}/Reviews`)
       .pipe(
@@ -35,9 +28,6 @@ export class PublicApiService {
       );
   }
 
-  /**
-   * Lists books with optional filtering and pagination
-   */
   listBooks(
     count: number = 15,
     offset: number = 0,
@@ -56,16 +46,13 @@ export class PublicApiService {
       { params }
     ).pipe(
       map(response => {
-        // Normalize the availability property on each book
         const processedBooks = response.books.map(book => {
-          // If available is undefined but Available exists, copy the value
           if (book.available === undefined && book.Available !== undefined) {
             book.available = book.Available;
           }
           return book;
         });
 
-        // Sort by search rank if this was a search query
         if (searchQuery) {
           return processedBooks.sort((a, b) => {
             const rankA = a.searchRank || 0;

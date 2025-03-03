@@ -1,8 +1,8 @@
-import { IUser } from './IUser';
-import { Guid } from './uuid';
-import { AuthResponse } from '../dtos/responses/AuthResponse';
+import { User } from './user';
+import { Guid } from './guid';
+import { AuthResponse } from '../dtos/responses/auth-response';
 
-export class Librarian implements IUser {
+export class Librarian implements User {
   private readonly id: Guid;
   private readonly userName: string;
   private readonly displayName: string;
@@ -35,16 +35,14 @@ export class Librarian implements IUser {
     return this.roles.includes('Librarian');
   }
 
-  // Nested Factory class
   static Factory = class {
     static fromAuthResponse(response: AuthResponse): Librarian {
-      // Ensure the user has the Librarian role
       if (!response.user.roles.includes('Librarian')) {
         throw new Error('User does not have Librarian role');
       }
 
       return new Librarian(
-        response.user.id as unknown as Guid, // May need conversion depending on Guid implementation
+        response.user.id as unknown as Guid,
         response.user.userName,
         response.user.displayName || response.user.userName,
         response.user.roles

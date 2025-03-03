@@ -1,6 +1,6 @@
 ﻿namespace LibraryOfTroyApi.Model;
 
-public interface IUser {
+public interface User {
     public Guid GetUserId ( );
     public string GetUserName ( );
     public string GetDisplayName ( );

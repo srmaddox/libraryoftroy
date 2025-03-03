@@ -1,4 +1,4 @@
-import { Book } from '../../model/Book';
+import { Book } from '../../model/book';
 
 export type BookCreateRequest =
   Pick<Book, 'title' | 'author'> &

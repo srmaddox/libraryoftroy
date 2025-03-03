@@ -1,6 +1,6 @@
-import {Guid} from './uuid';
+import {Guid} from './guid';
 
-export interface IUser {
+export interface User {
   getUserId(): Guid;
   getUserName(): string;
   getDisplayName(): string;

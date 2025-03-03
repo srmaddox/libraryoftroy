@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/AuthService';
-import { IdentityRegistrationRequest } from '../dtos/requests/IdentityRegistrationRequest';
+import { AuthService } from '../services/auth-service';
+import { IdentityRegistrationRequest } from '../dtos/requests/identity-registration-request';
 
 @Component({
   selector: 'app-register',

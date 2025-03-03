@@ -3,12 +3,12 @@ import { Component, EventEmitter, Input, OnInit, Output, OnDestroy, ChangeDetect
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BookDetailResponse } from '../../dtos/responses/BookDetailResponse';
-import { Guid } from '../../model/uuid';
-import { CustomerApiService } from '../../services/CustomerApiService';
-import { CheckOutRequest } from '../../dtos/requests/CheckOutRequest';
-import { AppEventManager } from '../../services/AppEventManager';
-import { AuthService } from '../../services/AuthService';
+import { BookDetailResponse } from '../../dtos/responses/book-detail-response';
+import { Guid } from '../../model/guid';
+import { CustomerApiService } from '../../services/customer-api-service';
+import { CheckOutRequest } from '../../dtos/requests/check-out-request';
+import { AppEventManager } from '../../services/app-event-manager';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-overlay-checkout-confirm',

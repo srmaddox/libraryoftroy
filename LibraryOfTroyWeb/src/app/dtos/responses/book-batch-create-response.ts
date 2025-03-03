@@ -1,4 +1,4 @@
-export interface BatchBookCreateResponse {
+export interface BookBatchCreateResponse {
   totalRequested: number;
   successCount: number;
   failedCount: number;

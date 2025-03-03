@@ -1,4 +1,4 @@
-import { Guid } from './uuid'
+import { Guid } from './guid'
 
 export interface Book {
   id: Guid;

@@ -87,6 +87,6 @@ export const routes: Routes = [
     data: { roles: ['Librarian', 'Admin'] }
   },
   // Default route
-  { path: '', redirectTo: '/(headerPane:nav-header)', pathMatch: 'full' }
+  { path: '', redirectTo: '/(headerPane:nav-header//cornerPane:library-bag//toolsPane:search-query//resultsPane:search-results//featurePane:featured-books//footerPane:nav-footer)', pathMatch: 'full' }
 ];
 

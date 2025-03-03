@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { LibrarianApiService } from '../../services/LibrarianApiService';
-import { PublicApiService } from '../../services/PublicApiService';
-import { AppEventManager } from '../../services/AppEventManager';
-import { BookDetailResponse } from '../../dtos/responses/BookDetailResponse';
-import { BookCreateRequest } from '../../dtos/requests/BookCreateRequest';
-import { BookUpdateRequest } from '../../dtos/requests/BookUpdateRequest';
-import { Guid } from '../../model/uuid';
+import { LibrarianApiService } from '../../services/librarian-api-service';
+import { PublicApiService } from '../../services/public-api-service';
+import { AppEventManager } from '../../services/app-event-manager';
+import { BookDetailResponse } from '../../dtos/responses/book-detail-response';
+import { BookCreateRequest } from '../../dtos/requests/book-create-request';
+import { BookUpdateRequest } from '../../dtos/requests/book-update-request';
+import { Guid } from '../../model/guid';
 import { Router } from '@angular/router';
 
 enum InventoryMode {

@@ -51,6 +51,13 @@ public partial record Book {
     [NotMapped]
     public bool IsAvailable {
         get {
+            return !CheckOutEvents.Any(co => co.ReturnDateTime == null);
+        }
+    }
+
+    /*
+     * public bool IsAvailable {
+        get {
             // If there are no checkouts, the book is available
             if ( !CheckOutEvents.Any ( ) )
                 return true;
@@ -64,6 +71,6 @@ public partial record Book {
             return latestCheckOut?.ReturnDateTime != null;
         }
     }
-
+    */
 }
 

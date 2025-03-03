@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { LibrarianApiService } from '../../services/LibrarianApiService';
-import { AppEventManager } from '../../services/AppEventManager';
-import {Guid} from '../../model/uuid';
+import { LibrarianApiService } from '../../services/librarian-api-service';
+import { AppEventManager } from '../../services/app-event-manager';
+import {Guid} from '../../model/guid';
 
 // Define the BorrowedBookResponse interface
 interface BorrowedBookResponse {

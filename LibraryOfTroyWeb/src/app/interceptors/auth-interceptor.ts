@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from '../services/AuthService';
+import { AuthService } from '../services/auth-service';
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -17,7 +17,6 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Skip interceptor for login and register requests
     if (request.url.includes('/api/auth/login') || request.url.includes('/api/auth/register')) {
       return next.handle(request);
     }
@@ -32,7 +31,6 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       });
 
-      // Handle the authenticated request
       return next.handle(authRequest).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -45,7 +43,6 @@ export class AuthInterceptor implements HttpInterceptor {
       );
     }
 
-    // If no token, just forward the request
     return next.handle(request);
   }
 }

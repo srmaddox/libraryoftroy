@@ -1,4 +1,3 @@
-// Update app.component.ts
 import {
   Component,
   OnInit,
@@ -12,28 +11,12 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription, filter } from 'rxjs';
 
-// Component imports - these would be lazy loaded in a real app
-import { SearchQueryComponent } from './shared/search-query/search-query.component';
-import { FeaturedBooksComponent } from './shared/featured-books/featured-books.component';
-import { NavFooterComponent } from './shared/nav-footer/nav-footer.component';
-import { NavHeaderComponent } from './shared/nav-header/nav-header.component';
-import { LibraryBagComponent } from './shared/library-bag/library-bag.component';
-import { SearchResultsComponent } from './shared/search-results/search-results.component';
-import { OverlayDetailsComponent } from './shared/overlay-details/overlay-details.component';
-import { OverlayCheckoutConfirmComponent } from './shared/overlay-checkout-confirm/overlay-checkout-confirm.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
+import { BookDetailResponse } from './dtos/responses/book-detail-response';
 
-// Services, models and DTOs
-import { PublicApiService } from './services/PublicApiService';
-import { BookDetailResponse } from './dtos/responses/BookDetailResponse';
-import { LayoutRouterService, OverlayType } from './services/LayoutRouterService';
-
-// Event management
 import {
   AppEventManager,
   AppEvent
-} from './services/AppEventManager';
+} from './services/app-event-manager';
 
 @Component({
   selector: 'app-root',
@@ -41,16 +24,6 @@ import {
   imports: [
     CommonModule,
     RouterOutlet,
-    SearchQueryComponent,
-    FeaturedBooksComponent,
-    NavFooterComponent,
-    NavHeaderComponent,
-    LibraryBagComponent,
-    SearchResultsComponent,
-    OverlayDetailsComponent,
-    OverlayCheckoutConfirmComponent,
-    LoginComponent,
-    RegisterComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -69,20 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
     footer: false
   };
 
-  // Collection of subscriptions to manage
   private subscriptions = new Subscription();
   private activeComponentRef: ComponentRef<any> | null = null;
 
   constructor(
-    private publicApiService: PublicApiService,
     private eventManager: AppEventManager,
-    private layoutRouter: LayoutRouterService,
     private cdr: ChangeDetectorRef,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
-    // Monitor route changes to determine if we're on an auth page
     this.subscriptions.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd)
@@ -93,23 +62,18 @@ export class AppComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Set up initial routes for the main content
     this.setupInitialRoutes();
 
-    // Subscribe to all application events
     this.setupEventSubscriptions();
   }
 
   ngOnDestroy(): void {
-    // Clean up all subscriptions
     this.subscriptions.unsubscribe();
   }
 
   private setupInitialRoutes(): void {
-    // Check current URL
     const currentUrl = this.router.url;
     if (!currentUrl.includes('/login') && !currentUrl.includes('/register')) {
-      // Only set up initial routes if not on auth page
       this.router.navigate([{
         outlets: {
           toolsPane: ['search-query'],
@@ -123,9 +87,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Set up subscriptions to all relevant application events
-   */
   private setupEventSubscriptions(): void {
     this.subscriptions.add(
       this.eventManager.appBus$.subscribe((event: AppEvent) => {
@@ -146,9 +107,6 @@ export class AppComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Uses the router to dynamically load a component into an outlet
-   */
   private setPanelOutput(outletName: string, componentPath: string): void {
     this.router.navigate([{ outlets: { [outletName]: [componentPath] } }]).then(() => {
       this.cdr.detectChanges(); // Force change detection

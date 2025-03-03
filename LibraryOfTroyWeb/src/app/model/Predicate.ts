@@ -1,1 +1,1 @@
-export type FilterPredicate<T> = (item: T) => boolean;
+//export type FilterPredicate<T> = (item: T) => boolean;

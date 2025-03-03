@@ -2,9 +2,9 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { PublicApiService } from '../../services/PublicApiService';
-import { BookDetailResponse } from '../../dtos/responses/BookDetailResponse';
-import { AppEventManager } from '../../services/AppEventManager';
+import { PublicApiService } from '../../services/public-api-service';
+import { BookDetailResponse } from '../../dtos/responses/book-detail-response';
+import { AppEventManager } from '../../services/app-event-manager';
 
 @Component({
   selector: 'app-search-query',

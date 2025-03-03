@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { BookDetailResponse } from '../../dtos/responses/BookDetailResponse';
-import { AppEventManager } from '../../services/AppEventManager';
-import { Guid } from '../../model/uuid';
+import { BookDetailResponse } from '../../dtos/responses/book-detail-response';
+import { AppEventManager } from '../../services/app-event-manager';
+import { Guid } from '../../model/guid';
 
 @Component({
   selector: 'app-search-results',

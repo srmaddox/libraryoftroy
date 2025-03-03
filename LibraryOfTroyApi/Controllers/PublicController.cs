@@ -177,7 +177,8 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
     private async Task<OneOf<List<Book>, Exception>> _ListBooks ( int count, int offset ) {
         try {
             // First apply Include
-            Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Book, ICollection<CheckOutEvent>> query = context.Books.Include(b => b.CheckOutEvents);
+            Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Book, ICollection<CheckOutEvent>> query =
+                context.Books.Include(b => b.CheckOutEvents);
 
             // Then apply sorting to the IQueryable result (not to the IIncludableQueryable)
             IQueryable<Book> sortedQuery = ApplyStandardSorting(query);

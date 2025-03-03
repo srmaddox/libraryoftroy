@@ -1,4 +1,4 @@
-import { BookDetailResponse } from './BookDetailResponse';
+import { BookDetailResponse } from './book-detail-response';
 
 
 export interface BookDetailAndReviewsResponse {

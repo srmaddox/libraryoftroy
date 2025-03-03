@@ -2,8 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../services/AuthService';
-import { AppEventManager } from '../../services/AppEventManager';
+import { AuthService } from '../../services/auth-service';
+import { AppEventManager } from '../../services/app-event-manager';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 
 @Component({

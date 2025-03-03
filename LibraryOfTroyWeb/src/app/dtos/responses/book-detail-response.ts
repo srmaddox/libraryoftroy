@@ -1,4 +1,4 @@
-import { Guid } from '../../model/uuid';
+import { Guid } from '../../model/guid';
 
 export interface BookDetailResponse {
   id: Guid;
