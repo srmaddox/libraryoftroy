@@ -1,0 +1,47 @@
+<!-- Update auth buttons in nav-header.component.html -->
+<nav class="nav-header">
+  <div class="nav-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="currentColor">
+      <path d="M3 3v18h2V3H3zm16 0v18h2V3h-2zM7 6v12h2V6H7zm4 0v12h2V6h-2zm4 0v12h2V6h-2z" />
+    </svg>
+    <h1>Library of Troy</h1>
+  </div>
+
+  <div class="nav-user-controls">
+    <ng-container *ngIf="!isAuthenticated">
+      <a [routerLink]="['/login']" class="auth-button login">Login</a>
+      <a [routerLink]="['/register']" class="auth-button register">Register</a>
+    </ng-container>
+
+    <ng-container *ngIf="isAuthenticated && authService.currentUserValue">
+      <span class="user-greeting">Hello, {{ authService.currentUserValue.getDisplayName() }}</span>
+      <div class="user-menu-container" (click)="toggleUserMenu()" (clickOutside)="closeUserMenu()">
+        <button class="user-menu-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <div class="user-dropdown-menu" [class.active]="isUserMenuOpen">
+          <div class="menu-header">
+            <span class="user-name">{{ authService.currentUserValue.getDisplayName() }}</span>
+            <span class="user-role" *ngIf="authService.hasRole('Librarian')">Librarian</span>
+            <span class="user-role" *ngIf="authService.hasRole('Admin')">Administrator</span>
+          </div>
+
+          <ul class="menu-items">
+            <li><a href="javascript:void(0)" (click)="viewMyBorrows()">My Borrowed Books</a></li>
+            <li *ngIf="authService.hasRole('Librarian')">
+              <a href="javascript:void(0)" (click)="openBookInventory()">Manage Inventory</a>
+            </li>
+            <li *ngIf="authService.hasRole('Librarian')">
+              <a href="javascript:void(0)" (click)="openBorrowedManager()">Manage Checkouts</a>
+            </li>
+            <li><a href="javascript:void(0)" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</nav>

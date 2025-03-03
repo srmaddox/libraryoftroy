@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Fira+Code:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Notable&family=Noto+Sans+Mono:wdth,wght@62.5,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+:root {
+  font-family: "Alegreya", serif;
+  font-size: 10pt;
+}
+
+body {
+  width: 99vw;
+  height: 98vh;
+  background: #e5e8ee;
+  color: #1e4572;
+  padding: 0;
+  margin: 0;
+}
+
+:host .search-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: space-around;
+}
+:host .search-child-input {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 100%;
+  align-self: auto;
+  order: 0;
+}
+:host .search-child-tip {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 100%;
+  align-self: auto;
+  order: 0;
+}
+:host .search-child-tip p {
+  font-family: "IBM Plex Sans", "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+  text-align: center;
+  color: rgba(0, 92, 139, 0.5333333333);
+}
+:host .custom_input {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+}
+:host .input {
+  font-size: 1.6em;
+  font-weight: bold;
+  padding: 5px 10px;
+  width: 100%;
+  padding-left: 35px;
+  outline: none;
+  background: #FFFFFF;
+  color: #292F56;
+  border: 3px double #C4D1EB;
+  border-radius: 8px;
+  box-shadow: 5px 4px 8px 2px #E2E2E2;
+  transition: 0.3s ease;
+}
+:host .input.searching {
+  background: #F8F8F8;
+  color: #292F56;
+  border-color: rgba(196, 209, 235, 0.5);
+}
+:host .input:focus {
+  background: #F2F2F2;
+  border: 3px solid #5A7EC7;
+  border-radius: 10px;
+}
+:host .input::placeholder {
+  color: rgba(41, 47, 86, 0.4666666667);
+}
+:host .svg_icon {
+  position: absolute;
+  left: 10px;
+  fill: #4660DC;
+  width: 18px;
+  height: 18px;
+}
+:host .search-spinner {
+  position: absolute;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+}
+:host .search-spinner svg {
+  animation: rotate 1.5s linear infinite;
+}
+:host .search-spinner .spinner-path {
+  animation: dash 1.5s ease-in-out infinite;
+}
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+/*# sourceMappingURL=search-query.component.css.map */

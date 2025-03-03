@@ -1,0 +1,148 @@
+@use '../styles.scss' as styles;
+
+:host {
+  font-family: 'Alegreya', serif;
+
+  .svg-hidden {
+    display: block;
+  }
+
+  svg#logo-clip {
+    display: block;
+  }
+
+  .layout {
+    position:relative;
+    margin:0;
+    padding:o;
+    z-index: 1;
+    width:100%;
+    height:100%;
+    display: grid;
+    grid:
+    ".  .    .    .    .    .    .    .    .    .    .    .    .    ." 1fr
+    ".  HEAD HEAD HEAD HEAD HEAD HEAD HEAD CART CART CART CART CART ." 1fr
+    ".  SRCH SRCH SRCH SRCH SRCH SRCH SRCH CART CART CART CART CART ." 1fr
+    ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT CART CART CART CART CART ." 2fr
+    ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr
+    ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr
+    ".  FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT ." 1fr
+   /2fr 1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  2fr;
+    gap: 2em;
+  }
+
+  .nav-header {
+    grid-area: HEAD;
+    box-sizing: content-box;
+  }
+  .library-bag {
+    grid-area: CART;
+    box-sizing: content-box;
+  }
+  .search-query {
+    grid-area: SRCH;
+    box-sizing: content-box;
+  }
+  .search-results {
+    grid-area: RSLT;
+    box-sizing: content-box;
+  }
+  .featured-books {
+    grid-area: FEAT;
+    box-sizing: content-box;
+  }
+  .nav-footer {
+    grid-area: FOOT;
+    box-sizing: content-box;
+  }
+  .overlay {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 99vw;
+    height: 98vh;
+    z-index: 2;
+    background: transparent;
+    margin:0;
+    padding:0;
+
+    display: grid;
+    grid:
+    ".  .    .    .    .    .    .    .    .    .    .    .    .    ." 1fr
+    ". HEAD HEAD HEAD HEAD HEAD HEAD HEAD DTLS DTLS DTLS DTLS DTLS  ." 1fr
+    ". TOOL TOOL TOOL TOOL TOOL TOOL TOOL DTLS DTLS DTLS DTLS DTLS  ." 1fr
+    ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr
+    ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr
+    ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr
+    ". .    FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT .     ." 1fr
+    / 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;
+    gap: 2em;
+
+
+  }
+
+  .overlay-header {
+    grid-area: HEAD;
+    box-sizing: content-box;
+
+    pointer-events: none;
+  }
+
+  .rightOverlayPane {
+    grid-area: DTLS;
+    box-sizing: content-box;
+
+    opacity: -1;
+    pointer-events: none;
+    transition: opacity -1.3s ease;
+
+    &.active {
+      opacity: 1;
+      pointer-events: auto;
+//      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .overlay-tool {
+    grid-area: TOOL;
+    box-sizing: content-box;
+
+    pointer-events: none;
+  }
+
+  .overlay-result {
+    grid-area: RSLT;
+    box-sizing: content-box;
+
+    pointer-events: none;
+  }
+
+  .overlay-footer {
+    grid-area: FOOT;
+    box-sizing: content-box;
+  }
+
+
+
+}
+
+/* Add this to app.component.scss */
+
+.auth-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e5e8ee;
+}
+
+/* Style updates for login/register container to make it look better */
+:host ::ng-deep {
+  .login-container, .register-container {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+}

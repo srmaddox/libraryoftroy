@@ -1,0 +1,52 @@
+<div id="layout" class="layout" *ngIf="!isAuthPage">
+  <div id="nav-header" class="nav-header">
+    <router-outlet name="headerPane"></router-outlet>
+  </div>
+
+  <div id="library-bag" class="library-bag">
+    <router-outlet name="cornerPane"></router-outlet>
+  </div>
+
+  <div id="search-query" class="search-query">
+    <router-outlet name="toolsPane"></router-outlet>
+  </div>
+
+  <div id="search-results" class="search-results">
+    <router-outlet name="resultsPane"></router-outlet>
+  </div>
+
+  <div id="featured-books" class="featured-books">
+    <router-outlet name="featurePane"></router-outlet>
+  </div>
+
+  <div id="nav-footer" class="nav-footer">
+    <router-outlet name="footerPane"></router-outlet>
+  </div>
+</div>
+
+<!-- Show main router outlet for auth pages -->
+<div class="auth-container" *ngIf="isAuthPage">
+  <router-outlet></router-outlet>
+</div>
+
+<div id="overlay" class="overlay" *ngIf="!isAuthPage">
+  <div id="overlay-header" class="overlay-header" [class.active]="overlayVisibility['header']">
+    <router-outlet name="headerOverlayPane"></router-outlet>
+  </div>
+
+  <div id="rightOverlayPane" class="rightOverlayPane" [class.active]="overlayVisibility['rightOverlayPane']">
+    <router-outlet name="rightOverlayPane"></router-outlet>
+  </div>
+
+  <div id="overlay-tool" class="overlay-tool" [class.active]="overlayVisibility['tool']">
+    <router-outlet name="toolsOverlayPane"></router-outlet>
+  </div>
+
+  <div id="overlay-result" class="overlay-result" [class.active]="overlayVisibility['result']">
+    <router-outlet name="resultOverlayPane"></router-outlet>
+  </div>
+
+  <div id="overlay-footer" class="overlay-footer" [class.active]="overlayVisibility['footer']">
+    <router-outlet name="footerOverlayPane"></router-outlet>
+  </div>
+</div>

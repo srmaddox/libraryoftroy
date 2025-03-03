@@ -1,0 +1,46 @@
+<!-- search-results.component.html -->
+<div class="search-results-container">
+  <div *ngIf="books.length === 0" class="no-results">
+    <p>No books found. Try adjusting your search criteria.</p>
+  </div>
+
+  <div *ngIf="books.length > 0" class="book-list">
+    <div *ngFor="let bookDetail of books" class="book-item" (click)="selectBook(bookDetail)">
+      <!-- Hidden metadata section -->
+      <div class="hidden-metadata" style="display: none;">
+        <pre>{{ bookDetail.rankingMetaData }}</pre>
+      </div>
+
+      <div class="book-cover">
+        <img *ngIf="bookDetail.coverImageUrl" [src]="bookDetail.coverImageUrl" [alt]="bookDetail.title" />
+        <div *ngIf="!bookDetail.coverImageUrl" class="default-cover">
+          <span>Cover</span>
+          <span>Image</span>
+        </div>
+      </div>
+
+      <div class="book-content">
+        <h3 class="book-title">{{ bookDetail.title }}</h3>
+        <p class="book-author">by {{ bookDetail.author }}</p>
+
+        <div class="book-description">
+          {{ bookDetail.description && bookDetail.description.length > 200 ?
+          (bookDetail.description | slice:0:200) + '...' :
+          bookDetail.description }}
+        </div>
+
+        <div class="book-footer">
+          <div *ngIf="bookDetail.searchRank" class="search-rank">
+            {{ bookDetail.searchRank.toFixed(1) }}
+          </div>
+
+          <div class="availability"
+               [class.available]="bookDetail.available === true"
+               [class.unavailable]="bookDetail.available === false">
+            {{ bookDetail.available === true ? 'Available' : 'Checked Out' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

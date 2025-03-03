@@ -1,0 +1,78 @@
+@use '../../../styles.scss' as styles;
+
+:host {
+  color: #00a3a4;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: "Roboto", serif;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  a:link {
+    display:block;
+    color: #000000EE;
+    text-decoration: none;
+    background-color: #00d493;
+    padding:0.6rem;
+    border-radius: 0.2em;
+  }
+  a:active {
+    color: #000000EE;
+    text-decoration: none;
+    background-color: #00d493;
+    padding:0.6rem;
+    border-radius: 0.2em;
+  }
+  a:visited {
+    color: #000000EE;
+    text-decoration: none;
+    background-color: #00d493;
+    padding:0.6rem;
+    border-radius: 0.2em;
+  }
+  a:hover {
+    color: #000000EE;
+    text-decoration: none;
+    background-color: #00bca1;
+    padding:0.6rem;
+    border-radius: 0.2em;
+  }
+
+
+  footer {
+    inline-size:100%;
+    block-size: 4lh;
+
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding:1rem;
+    padding-left:4rem;
+    padding-right:4rem;
+
+
+    box-shadow: #1e4572 0 0 2rem 0.3rem;
+    height: min-content;
+
+  }
+
+  ul.user {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+  }
+
+  ul.admin {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+  }
+
+}

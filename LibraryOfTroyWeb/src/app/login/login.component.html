@@ -1,0 +1,62 @@
+<!-- Updated login.component.html -->
+<div class="login-container">
+  <div class="login-card">
+    <h2>Login to Library of Troy</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="alert error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <div class="form-group">
+        <label for="userName">Email</label>
+        <input
+          type="email"
+          id="userName"
+          formControlName="userName"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': isSubmitted && f['userName'].errors }"
+          placeholder="Enter your email"
+        />
+        <div *ngIf="isSubmitted && f['userName'].errors" class="error-message">
+          <div *ngIf="f['userName'].errors['required']">Email is required</div>
+          <div *ngIf="f['userName'].errors['email']">Please enter a valid email address</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': isSubmitted && f['password'].errors }"
+          placeholder="Enter your password"
+        />
+        <div *ngIf="isSubmitted && f['password'].errors" class="error-message">
+          <div *ngIf="f['password'].errors['required']">Password is required</div>
+          <div *ngIf="f['password'].errors['minlength']">Password must be at least 8 characters</div>
+        </div>
+      </div>
+
+      <div class="form-group checkbox">
+        <label>
+          <input type="checkbox" formControlName="rememberMe" />
+          Remember me
+        </label>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" [disabled]="loading" class="submit-button">
+          <span *ngIf="loading" class="spinner"></span>
+          Login
+        </button>
+      </div>
+
+      <div class="register-link">
+        Don't have an account? <a [routerLink]="['/register']">Register now</a>
+      </div>
+    </form>
+  </div>
+</div>

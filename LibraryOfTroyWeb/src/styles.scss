@@ -1,0 +1,46 @@
+$troy-gradient: linear-gradient(to top left,
+  #292f56 0%,
+  #1e4572 10%,
+  #005c8b 20%,
+  #007498 30%,
+  #008ba0 40%,
+  #00a3a4 50%,
+  #00bca1 60%,
+  #00d493 70%,
+  #69e882 80%,
+  #acfa70 90%
+);
+
+$color_hints_fg: #005c8b88;
+
+$primary-background: #e5e8ee;
+$section-background: #ccd2de;
+$primary: #1e4572;
+
+$border:#b3bcce;
+$inputcolor: #e5e8ee;
+$accentButtonColor: #00d493;
+
+$buttonColor: #00a3a4;
+
+@import url('https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Fira+Code:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Notable&family=Noto+Sans+Mono:wdth,wght@62.5,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  font-family: 'Alegreya', serif;
+  font-size: 10pt;
+}
+
+  body {
+    width: 99vw;
+    height: 98vh;
+    background: $primary-background;
+    color: $primary;
+    padding:0;
+    margin:0;
+  }
+
+
+
+
+
+

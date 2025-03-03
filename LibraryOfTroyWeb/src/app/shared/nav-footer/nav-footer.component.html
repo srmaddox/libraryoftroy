@@ -1,0 +1,23 @@
+<!-- Updated src/app/shared/nav-footer/nav-footer.component.html -->
+<footer>
+  <ul class="user">
+    <!-- Show Sign-In only for unauthenticated users -->
+    <li *ngIf="!isAuthenticated">
+      <a [routerLink]="['/login']">Sign-In</a>
+    </li>
+
+    <!-- Show My Borrows only for authenticated users -->
+    <li *ngIf="isAuthenticated">
+      <a href="javascript:void(0)" (click)="viewMyBorrows()">My Borrows</a>
+    </li>
+
+    <!-- Show management options only for librarians -->
+    <li *ngIf="isAuthenticated && authService.hasRole('Librarian')">
+      <a href="javascript:void(0)" (click)="navigateToBookInventoryManager()">Inventory Manager</a>
+    </li>
+
+    <li *ngIf="isAuthenticated && authService.hasRole('Librarian')">
+      <a href="javascript:void(0)" (click)="navigateToBorrowedBookManager()">Return Books</a>
+    </li>
+  </ul>
+</footer>

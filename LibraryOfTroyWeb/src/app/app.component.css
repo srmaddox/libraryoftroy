@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Fira+Code:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Notable&family=Noto+Sans+Mono:wdth,wght@62.5,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+:root {
+  font-family: "Alegreya", serif;
+  font-size: 10pt;
+}
+
+body {
+  width: 99vw;
+  height: 98vh;
+  background: #e5e8ee;
+  color: #1e4572;
+  padding: 0;
+  margin: 0;
+}
+
+:host {
+  font-family: "Alegreya", serif;
+}
+:host .svg-hidden {
+  display: block;
+}
+:host svg#logo-clip {
+  display: block;
+}
+:host .layout {
+  position: relative;
+  margin: 0;
+  padding: o;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid: ".  .    .    .    .    .    .    .    .    .    .    .    .    ." 1fr ".  HEAD HEAD HEAD HEAD HEAD HEAD HEAD CART CART CART CART CART ." 1fr ".  SRCH SRCH SRCH SRCH SRCH SRCH SRCH CART CART CART CART CART ." 1fr ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT CART CART CART CART CART ." 2fr ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr ".  FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT ." 1fr/2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;
+  gap: 2em;
+}
+:host .nav-header {
+  grid-area: HEAD;
+  box-sizing: content-box;
+}
+:host .library-bag {
+  grid-area: CART;
+  box-sizing: content-box;
+}
+:host .search-query {
+  grid-area: SRCH;
+  box-sizing: content-box;
+}
+:host .search-results {
+  grid-area: RSLT;
+  box-sizing: content-box;
+}
+:host .featured-books {
+  grid-area: FEAT;
+  box-sizing: content-box;
+}
+:host .nav-footer {
+  grid-area: FOOT;
+  box-sizing: content-box;
+}
+:host .overlay {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 99vw;
+  height: 98vh;
+  z-index: 2;
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid: ".  .    .    .    .    .    .    .    .    .    .    .    .    ." 1fr ". HEAD HEAD HEAD HEAD HEAD HEAD HEAD DTLS DTLS DTLS DTLS DTLS  ." 1fr ". TOOL TOOL TOOL TOOL TOOL TOOL TOOL DTLS DTLS DTLS DTLS DTLS  ." 1fr ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr ". RSLT RSLT RSLT RSLT RSLT RSLT RSLT DTLS DTLS DTLS DTLS DTLS  ." 2fr ". .    FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT .     ." 1fr/2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 2fr;
+  gap: 2em;
+}
+:host .overlay-header {
+  grid-area: HEAD;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+:host .rightOverlayPane {
+  grid-area: DTLS;
+  box-sizing: content-box;
+  opacity: -1;
+  pointer-events: none;
+  transition: opacity -1.3s ease;
+}
+:host .rightOverlayPane.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+:host .overlay-tool {
+  grid-area: TOOL;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+:host .overlay-result {
+  grid-area: RSLT;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+:host .overlay-footer {
+  grid-area: FOOT;
+  box-sizing: content-box;
+}
+
+/* Add this to app.component.scss */
+.auth-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e5e8ee;
+}
+
+/* Style updates for login/register container to make it look better */
+:host ::ng-deep .login-container, :host ::ng-deep .register-container {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+/*# sourceMappingURL=app.component.css.map */

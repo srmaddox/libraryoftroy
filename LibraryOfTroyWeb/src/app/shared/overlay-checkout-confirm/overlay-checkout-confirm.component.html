@@ -1,0 +1,89 @@
+<section class="checkout-confirm-container login-required" *ngIf="needsLogin && book">
+  <div class="close-button" (click)="cancelCheckout()">×</div>
+  <div class="login-prompt">
+    <h2>Login Required</h2>
+    <p>You need to be logged in to check out "{{book?.title}}"</p>
+    <div class="login-buttons">
+      <button class="secondary-button" (click)="cancelCheckout()">Cancel</button>
+      <button class="primary-button" (click)="redirectToLogin()">Login now</button>
+    </div>
+  </div>
+</section>
+
+<section class="checkout-confirm-container" *ngIf="book && !isCheckoutSuccessful">
+  <div class="close-button" (click)="cancelCheckout()">×</div>
+
+  <div class="checkout-content">
+    <h1>Confirm Book Checkout</h1>
+
+    <div class="book-info">
+      <div class="cover-container">
+        <img *ngIf="book.coverImageUrl" [src]="book.coverImageUrl" [alt]="book.title" />
+        <div *ngIf="!book.coverImageUrl" class="default-cover">
+          <span>No Cover</span>
+          <span>Image</span>
+        </div>
+      </div>
+
+      <div class="details">
+        <h2>{{book.title}}</h2>
+        <p class="author">by {{book.author}}</p>
+
+        <div class="checkout-details">
+          <div class="detail-item">
+            <span class="label">Checkout Date:</span>
+            <span class="value">{{ todayFormatted }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Expected Return Date:</span>
+            <span class="value emphasis">{{ returnDateFormatted }}</span>
+          </div>
+
+          <div class="note">
+            <p>Please return this book by the return date to avoid late fees.</p>
+            <p>You'll be responsible for any damages while the book is checked out to you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{errorMessage}}
+    </div>
+
+    <div class="action-buttons">
+      <button class="cancel-button" (click)="cancelCheckout()" [disabled]="isSubmitting">Cancel</button>
+      <button class="confirm-button" (click)="confirmCheckout()" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting">Confirm Checkout</span>
+        <span *ngIf="isSubmitting" class="loading-indicator">Processing...</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Success state container -->
+<section class="checkout-confirm-container success-container" *ngIf="isCheckoutSuccessful">
+  <div class="close-button" (click)="cancelCheckout()">×</div>
+  <div class="success-state">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00d493" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h2>Checkout Successful!</h2>
+    <p>You have successfully checked out "{{book?.title}}".</p>
+    <p class="return-info">Please return it by <span class="return-date">{{returnDateFormatted}}</span></p>
+    <button class="return-button" (click)="cancelCheckout()">Return to Library</button>
+  </div>
+</section>
+
+<!-- Error state container when no book is selected -->
+<section class="checkout-confirm-container error-container" *ngIf="!book && !isCheckoutSuccessful">
+  <div class="close-button" (click)="cancelCheckout()">×</div>
+  <div class="error-state">
+    <p>No book selected for checkout. Please return to the library and select a book.</p>
+    <button class="return-button" (click)="cancelCheckout()">Return to Library</button>
+  </div>
+</section>

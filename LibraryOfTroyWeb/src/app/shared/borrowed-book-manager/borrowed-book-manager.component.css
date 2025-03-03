@@ -1,0 +1,314 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Fira+Code:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Notable&family=Noto+Sans+Mono:wdth,wght@62.5,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+:root {
+  font-family: "Alegreya", serif;
+  font-size: 10pt;
+}
+
+body {
+  width: 99vw;
+  height: 98vh;
+  background: #e5e8ee;
+  color: #1e4572;
+  padding: 0;
+  margin: 0;
+}
+
+.borrowed-books-container {
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 1.5rem;
+  position: relative;
+  background-color: #ccd2de;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  font-family: "IBM Plex Sans", "Roboto", sans-serif;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.borrowed-books-container .close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  color: #1e4572;
+  cursor: pointer;
+  z-index: 10;
+}
+.borrowed-books-container .close-button:hover {
+  color: #00a3a4;
+}
+.borrowed-books-container .borrowed-books-header {
+  margin-bottom: 1.5rem;
+}
+.borrowed-books-container .borrowed-books-header h1 {
+  font-size: 1.8rem;
+  color: #1e4572;
+  margin: 0 0 1rem 0;
+}
+.borrowed-books-container .borrowed-books-header .controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.borrowed-books-container .borrowed-books-header .controls .search-filter {
+  flex: 1;
+  min-width: 250px;
+}
+.borrowed-books-container .borrowed-books-header .controls .search-filter input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e0e6f0;
+  font-size: 0.9rem;
+}
+.borrowed-books-container .borrowed-books-header .controls .search-filter input:focus {
+  outline: none;
+  border-color: #00a3a4;
+}
+.borrowed-books-container .borrowed-books-header .controls .view-options {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.borrowed-books-container .borrowed-books-content {
+  flex: 1;
+  overflow-y: auto;
+}
+.borrowed-books-container .loading-spinner, .borrowed-books-container .no-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  gap: 1rem;
+}
+.borrowed-books-container .loading-spinner p, .borrowed-books-container .no-results p {
+  color: #5d718e;
+  font-size: 1rem;
+}
+.borrowed-books-container .actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f7fa;
+  padding: 0.75rem 1rem;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0.5rem;
+}
+.borrowed-books-container .actions-bar .selection-info {
+  font-weight: 600;
+  color: #1e4572;
+}
+.borrowed-books-container .actions-bar .bulk-actions .return-selected-button {
+  background-color: #00d493;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.borrowed-books-container .actions-bar .bulk-actions .return-selected-button:hover {
+  background-color: #00a3a4;
+}
+.borrowed-books-container .books-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.borrowed-books-container .books-table th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f7fa;
+  color: #5d718e;
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #e0e6f0;
+}
+.borrowed-books-container .books-table .checkbox-column {
+  width: 40px;
+}
+.borrowed-books-container .books-table .title-column {
+  width: 30%;
+}
+.borrowed-books-container .books-table .borrower-column, .borrowed-books-container .books-table .date-column {
+  width: 15%;
+}
+.borrowed-books-container .books-table .status-column {
+  width: 10%;
+}
+.borrowed-books-container .books-table .actions-column {
+  width: 10%;
+}
+.borrowed-books-container .books-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e0e6f0;
+  vertical-align: middle;
+}
+.borrowed-books-container .books-table tr {
+  background-color: white;
+  transition: background-color 0.2s;
+}
+.borrowed-books-container .books-table tr:hover {
+  background-color: #f8f9fc;
+}
+.borrowed-books-container .books-table tr.overdue {
+  background-color: rgba(231, 76, 60, 0.05);
+}
+.borrowed-books-container .books-table tr.returned {
+  background-color: rgba(0, 163, 164, 0.05);
+  color: #8894a9;
+}
+.borrowed-books-container .books-table .title-cell .book-info {
+  display: flex;
+  flex-direction: column;
+}
+.borrowed-books-container .books-table .title-cell .book-title {
+  font-weight: 600;
+  color: #1e4572;
+}
+.borrowed-books-container .books-table .title-cell .book-author {
+  font-size: 0.8rem;
+  color: #5d718e;
+}
+.borrowed-books-container .books-table .overdue-date {
+  color: #e74c3c;
+  font-weight: 600;
+}
+.borrowed-books-container .books-table .overdue-date .days-overdue {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+.borrowed-books-container .books-table .status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.borrowed-books-container .books-table .status-badge.status-active {
+  background-color: rgba(105, 232, 130, 0.2);
+  color: #008ba0;
+}
+.borrowed-books-container .books-table .status-badge.status-overdue {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+.borrowed-books-container .books-table .status-badge.status-returned {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #8894a9;
+}
+.borrowed-books-container .books-table .return-button {
+  background-color: #00a3a4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.borrowed-books-container .books-table .return-button:hover {
+  background-color: #00d493;
+}
+.borrowed-books-container .books-table .return-date {
+  font-size: 0.8rem;
+  color: #8894a9;
+}
+.borrowed-books-container .checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  user-select: none;
+}
+.borrowed-books-container .checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.borrowed-books-container .checkbox-container .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #eef1f7;
+  border: 1px solid #c4d1eb;
+  border-radius: 3px;
+}
+.borrowed-books-container .checkbox-container:hover input ~ .checkmark {
+  background-color: #dfe6f2;
+}
+.borrowed-books-container .checkbox-container input:checked ~ .checkmark {
+  background-color: #00a3a4;
+  border-color: #00a3a4;
+}
+.borrowed-books-container .checkbox-container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.borrowed-books-container .checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+.borrowed-books-container .checkbox-container .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.borrowed-books-container .return-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.borrowed-books-container .return-overlay .return-dialog {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 400px;
+}
+.borrowed-books-container .return-overlay .return-dialog h2 {
+  margin-top: 0;
+  color: #1e4572;
+}
+.borrowed-books-container .return-overlay .return-dialog .progress-spinner {
+  margin-top: 1.5rem;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spinner-path {
+  animation: rotate 1.5s linear infinite;
+}
+
+/*# sourceMappingURL=borrowed-book-manager.component.css.map */

@@ -1,0 +1,77 @@
+<!-- overlay-details.component.html -->
+<section class="book-details-container">
+  <div class="close-button" (click)="closeOverlay()">×</div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <p>Loading book details...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>Sorry, there was an error loading the book details.</p>
+  </div>
+
+  <div *ngIf="book && !loading" class="book-content">
+    <h1 class="field two-halves">{{book.title}}</h1>
+    <div class="field two-halves author">by {{book.author}}</div>
+
+    <div class="book-main-content">
+      <div class="field cover-container">
+        <img *ngIf="book.coverImageUrl" [src]="book.coverImageUrl" [alt]="book.coverImageAltText || book.title" />
+        <div *ngIf="!book.coverImageUrl" class="default-cover">
+          <span>No Cover</span>
+          <span>Image</span>
+        </div>
+      </div>
+
+      <div class="book-details">
+        <div class="field description">{{book.description}}</div>
+
+        <div class="field metadata">
+          <div class="metadata-item">
+            <span class="label">Status:</span>
+            <span [class.available]="book.available === true" [class.unavailable]="book.available === false">
+    {{book.available === true ? 'Available' : 'Currently Checked Out'}}
+  </span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.averageCustomerReview && book.averageCustomerReview >= 0">
+            <span class="label">Rating:</span>
+            <span class="rating">{{book.averageCustomerReview.toFixed(1)}} / 5
+            ({{book.customerReviewCount}} {{book.customerReviewCount === 1 ? 'review' : 'reviews'}})</span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.publisher">
+            <span class="label">Publisher:</span>
+            <span>{{book.publisher}}</span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.publicationDate">
+            <span class="label">Published:</span>
+            <span>{{book.publicationDate}}</span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.isbn">
+            <span class="label">ISBN:</span>
+            <span>{{book.isbn}}</span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.pageCount">
+            <span class="label">Pages:</span>
+            <span>{{book.pageCount}}</span>
+          </div>
+
+          <div class="metadata-item" *ngIf="book.category">
+            <span class="label">Category:</span>
+            <span>{{book.category}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button [disabled]="!book.available" class="checkout-button" (click)="checkoutBook()">
+        {{book.available ? 'Checkout Book' : 'Join Waitlist'}}
+      </button>
+    </div>
+  </div>
+</section>

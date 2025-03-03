@@ -1,0 +1,138 @@
+<div class="borrowed-books-container">
+  <div class="close-button" (click)="closePanel()">×</div>
+
+  <header class="borrowed-books-header">
+    <h1>Borrowed Books Manager</h1>
+    <div class="controls">
+      <div class="search-filter">
+        <input
+          type="text"
+          placeholder="Search by title or borrower"
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()"
+        >
+      </div>
+      <div class="view-options">
+        <label class="checkbox-container">
+          <input type="checkbox" [(ngModel)]="showReturned" (change)="loadBorrowedBooks()">
+          <span class="checkmark"></span>
+          Show returned books
+        </label>
+        <label class="checkbox-container">
+          <input type="checkbox" [(ngModel)]="showOverdueOnly" (change)="applyFilters()">
+          <span class="checkmark"></span>
+          Overdue only
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <div class="borrowed-books-content">
+    <div *ngIf="isLoading" class="loading-spinner">
+      <svg width="40" height="40" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" stroke="rgba(0, 163, 164, 0.2)" stroke-width="4" fill="none"></circle>
+        <path class="spinner-path" d="M12 2a10 10 0 0 1 10 10" stroke="#00a3a4" stroke-width="4" stroke-linecap="round" fill="none"></path>
+      </svg>
+      <p>Loading borrowed books...</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredBooks.length === 0" class="no-results">
+      <p>No borrowed books found matching your criteria.</p>
+    </div>
+
+    <div *ngIf="!isLoading && filteredBooks.length > 0" class="borrowed-books-list">
+      <!-- Actions Bar -->
+      <div class="actions-bar">
+        <div class="selection-info" *ngIf="selectedBooks.length > 0">
+          {{ selectedBooks.length }} book(s) selected
+        </div>
+        <div class="bulk-actions" *ngIf="selectedBooks.length > 0">
+          <button class="return-selected-button" (click)="returnSelectedBooks()">
+            Return Selected Books
+          </button>
+        </div>
+        <div class="select-all-container" *ngIf="filteredBooks.length > 0">
+          <label class="checkbox-container">
+            <input type="checkbox" [checked]="areAllBooksSelected()" [indeterminate]="someButNotAllBooksSelected()" (change)="toggleSelectAll()">
+            <span class="checkmark"></span>
+            Select All
+          </label>
+        </div>
+      </div>
+
+      <!-- Book List -->
+      <table class="books-table">
+        <thead>
+        <tr>
+          <th class="checkbox-column"></th>
+          <th class="title-column">Title</th>
+          <th class="borrower-column">Borrower</th>
+          <th class="date-column">Checkout Date</th>
+          <th class="date-column">Due Date</th>
+          <th class="status-column">Status</th>
+          <th class="actions-column">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let book of filteredBooks"
+            [class.overdue]="book.isOverdue"
+            [class.returned]="book.returnDate">
+          <td>
+            <label class="checkbox-container" *ngIf="!book.returnDate">
+              <input type="checkbox"
+                     [checked]="isBookSelected(book)"
+                     (change)="toggleBookSelection(book)">
+              <span class="checkmark"></span>
+            </label>
+          </td>
+          <td class="title-cell">
+            <div class="book-info">
+              <div class="book-title">{{ book.book.title }}</div>
+              <div class="book-author">by {{ book.book.author }}</div>
+            </div>
+          </td>
+          <td>{{ book.customerName }}</td>
+          <td>{{ book.checkoutDate | date:'MMM d, y' }}</td>
+          <td [class.overdue-date]="book.isOverdue">
+            {{ book.dueDate | date:'MMM d, y' }}
+            <span class="days-overdue" *ngIf="book.isOverdue">
+                ({{ book.daysOverdue }} days overdue)
+              </span>
+          </td>
+          <td>
+              <span class="status-badge"
+                    [class.status-overdue]="book.isOverdue"
+                    [class.status-returned]="book.returnDate"
+                    [class.status-active]="!book.isOverdue && !book.returnDate">
+                {{ getStatusText(book) }}
+              </span>
+          </td>
+          <td>
+            <button *ngIf="!book.returnDate"
+                    class="return-button"
+                    (click)="returnBook(book)">
+              Return
+            </button>
+            <span *ngIf="book.returnDate" class="return-date">
+                Returned on {{ book.returnDate | date:'MMM d, y' }}
+              </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="currentlyReturningBooks" class="return-overlay">
+    <div class="return-dialog">
+      <h2>Returning Books</h2>
+      <p>Please wait while the selected books are being returned...</p>
+      <div class="progress-spinner">
+        <svg width="40" height="40" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="rgba(0, 163, 164, 0.2)" stroke-width="4" fill="none"></circle>
+          <path class="spinner-path" d="M12 2a10 10 0 0 1 10 10" stroke="#00a3a4" stroke-width="4" stroke-linecap="round" fill="none"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

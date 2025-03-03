@@ -1,0 +1,268 @@
+<div class="inventory-manager-container">
+  <div class="close-button" (click)="closeManager()">×</div>
+
+  <header>
+    <h1>Book Inventory Manager</h1>
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </header>
+
+  <!-- List Mode (Default) -->
+  <div class="inventory-content" *ngIf="currentMode === InventoryMode.LIST">
+    <div class="inventory-controls">
+      <div class="search-controls">
+        <div class="search-box">
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            placeholder="Search by title or author..."
+            (keyup.enter)="searchBooks()"
+          >
+          <button (click)="searchBooks()" class="search-button">Search</button>
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="primary-button" (click)="switchToCreateMode()">Add New Book</button>
+      </div>
+    </div>
+
+    <div class="inventory-table-container">
+      <table class="inventory-table">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Category</th>
+          <th>Publication Date</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngIf="isLoading">
+          <td colspan="6" class="loading-cell">
+            <div class="loading-spinner">Loading...</div>
+          </td>
+        </tr>
+        <tr *ngIf="!isLoading && books.length === 0">
+          <td colspan="6" class="empty-cell">No books found</td>
+        </tr>
+        <tr *ngFor="let book of books">
+          <td>{{ book.title }}</td>
+          <td>{{ book.author }}</td>
+          <td>
+              <span class="status-badge"
+                    [class.available]="book.available"
+                    [class.unavailable]="!book.available">
+                {{ book.available ? 'Available' : 'Checked Out' }}
+              </span>
+          </td>
+          <td>{{ book.category || 'N/A' }}</td>
+          <td>{{ formatDate(book.publicationDate) }}</td>
+          <td class="actions-cell">
+            <button class="edit-button" (click)="switchToEditMode(book)">Edit</button>
+            <button class="delete-button" (click)="switchToDeleteMode(book)">Delete</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" *ngIf="books.length > 0">
+      <button
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+        class="pagination-button"
+      >
+        Previous
+      </button>
+      <span class="page-info">Page {{ currentPage }}</span>
+      <button
+        [disabled]="currentPage * itemsPerPage >= totalItems"
+        (click)="nextPage()"
+        class="pagination-button"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- Create Mode -->
+  <div class="inventory-content" *ngIf="currentMode === InventoryMode.CREATE">
+    <h2>Add New Book</h2>
+
+    <form class="book-form">
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" id="title" [(ngModel)]="newBook.title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="author">Author *</label>
+        <input type="text" id="author" [(ngModel)]="newBook.author" name="author" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="newBook.description" name="description" rows="4"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label for="publisher">Publisher</label>
+          <input type="text" id="publisher" [(ngModel)]="newBook.publisher" name="publisher">
+        </div>
+
+        <div class="form-group half-width">
+          <label for="publicationDate">Publication Date</label>
+          <input type="date" id="publicationDate" [(ngModel)]="newBook.publicationDate" name="publicationDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label for="category">Category</label>
+          <input type="text" id="category" [(ngModel)]="newBook.category" name="category">
+        </div>
+
+        <div class="form-group half-width">
+          <label for="isbn">ISBN</label>
+          <input type="text" id="isbn" [(ngModel)]="newBook.ISBN" name="isbn">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pageCount">Page Count</label>
+        <input type="number" id="pageCount" [(ngModel)]="newBook.pageCount" name="pageCount" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="coverImageUrl">Cover Image URL</label>
+        <input type="text" id="coverImageUrl" [(ngModel)]="newBook.coverImageUrl" name="coverImageUrl">
+      </div>
+
+      <div class="form-group">
+        <label for="coverImageAltText">Cover Image Alt Text</label>
+        <input type="text" id="coverImageAltText" [(ngModel)]="newBook.coverImageAltText" name="coverImageAltText">
+      </div>
+
+      <!-- Book cover preview -->
+      <div class="form-group cover-preview" *ngIf="newBook.coverImageUrl">
+        <label>Cover Preview</label>
+        <div class="preview-container">
+          <img [src]="newBook.coverImageUrl" [alt]="newBook.coverImageAltText || 'Book cover'"
+               (error)="newBook.coverImageUrl = ''">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-button" (click)="switchToListMode()">Cancel</button>
+        <button type="button" class="primary-button" (click)="createBook()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Create Book</span>
+          <span *ngIf="isLoading">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Mode -->
+  <div class="inventory-content" *ngIf="currentMode === InventoryMode.EDIT && selectedBook">
+    <h2>Edit Book: {{ selectedBook.title }}</h2>
+
+    <form class="book-form">
+      <div class="form-group">
+        <label for="edit-title">Title *</label>
+        <input type="text" id="edit-title" [(ngModel)]="newBook.title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-author">Author *</label>
+        <input type="text" id="edit-author" [(ngModel)]="newBook.author" name="author" required>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-description">Description</label>
+        <textarea id="edit-description" [(ngModel)]="newBook.description" name="description" rows="4"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label for="edit-publisher">Publisher</label>
+          <input type="text" id="edit-publisher" [(ngModel)]="newBook.publisher" name="publisher">
+        </div>
+
+        <div class="form-group half-width">
+          <label for="edit-publicationDate">Publication Date</label>
+          <input type="date" id="edit-publicationDate" [(ngModel)]="newBook.publicationDate" name="publicationDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half-width">
+          <label for="edit-category">Category</label>
+          <input type="text" id="edit-category" [(ngModel)]="newBook.category" name="category">
+        </div>
+
+        <div class="form-group half-width">
+          <label for="edit-isbn">ISBN</label>
+          <input type="text" id="edit-isbn" [(ngModel)]="newBook.ISBN" name="isbn">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="edit-pageCount">Page Count</label>
+        <input type="number" id="edit-pageCount" [(ngModel)]="newBook.pageCount" name="pageCount" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="edit-coverImageUrl">Cover Image URL</label>
+        <input type="text" id="edit-coverImageUrl" [(ngModel)]="newBook.coverImageUrl" name="coverImageUrl">
+      </div>
+
+      <div class="form-group">
+        <label for="edit-coverImageAltText">Cover Image Alt Text</label>
+        <input type="text" id="edit-coverImageAltText" [(ngModel)]="newBook.coverImageAltText" name="coverImageAltText">
+      </div>
+
+      <!-- Book cover preview -->
+      <div class="form-group cover-preview" *ngIf="newBook.coverImageUrl">
+        <label>Cover Preview</label>
+        <div class="preview-container">
+          <img [src]="newBook.coverImageUrl" [alt]="newBook.coverImageAltText || 'Book cover'"
+               (error)="newBook.coverImageUrl = ''">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-button" (click)="switchToListMode()">Cancel</button>
+        <button type="button" class="primary-button" (click)="updateBook()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Update Book</span>
+          <span *ngIf="isLoading">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Delete Confirmation Mode -->
+  <div class="inventory-content delete-confirmation" *ngIf="currentMode === InventoryMode.DELETE && selectedBook">
+    <h2>Confirm Deletion</h2>
+
+    <div class="confirmation-message">
+      <p>Are you sure you want to delete the following book?</p>
+      <div class="book-info">
+        <h3>{{ selectedBook.title }}</h3>
+        <p>by {{ selectedBook.author }}</p>
+        <p *ngIf="selectedBook.description">{{ selectedBook.description }}</p>
+      </div>
+      <p class="warning">This action cannot be undone.</p>
+    </div>
+
+    <div class="confirmation-actions">
+      <button class="secondary-button" (click)="switchToListMode()">Cancel</button>
+      <button class="delete-button confirm" (click)="deleteBook()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Delete Book</span>
+        <span *ngIf="isLoading">Deleting...</span>
+      </button>
+    </div>
+  </div>
+</div>

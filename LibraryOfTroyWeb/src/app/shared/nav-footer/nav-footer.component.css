@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Fira+Code:wght@300..700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Notable&family=Noto+Sans+Mono:wdth,wght@62.5,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+:root {
+  font-family: "Alegreya", serif;
+  font-size: 10pt;
+}
+
+body {
+  width: 99vw;
+  height: 98vh;
+  background: #e5e8ee;
+  color: #1e4572;
+  padding: 0;
+  margin: 0;
+}
+
+:host {
+  color: #00a3a4;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: "Roboto", serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+:host a:link {
+  display: block;
+  color: rgba(0, 0, 0, 0.9333333333);
+  text-decoration: none;
+  background-color: #00d493;
+  padding: 0.6rem;
+  border-radius: 0.2em;
+}
+:host a:active {
+  color: rgba(0, 0, 0, 0.9333333333);
+  text-decoration: none;
+  background-color: #00d493;
+  padding: 0.6rem;
+  border-radius: 0.2em;
+}
+:host a:visited {
+  color: rgba(0, 0, 0, 0.9333333333);
+  text-decoration: none;
+  background-color: #00d493;
+  padding: 0.6rem;
+  border-radius: 0.2em;
+}
+:host a:hover {
+  color: rgba(0, 0, 0, 0.9333333333);
+  text-decoration: none;
+  background-color: #00bca1;
+  padding: 0.6rem;
+  border-radius: 0.2em;
+}
+:host footer {
+  inline-size: 100%;
+  block-size: 4lh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  box-shadow: #1e4572 0 0 2rem 0.3rem;
+  height: min-content;
+}
+:host ul.user {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+}
+:host ul.admin {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+}
+
+/*# sourceMappingURL=nav-footer.component.css.map */
