@@ -1,1 +1,11 @@
-<p>featured-books works!</p>
+<div class="featured-books card">
+  <h2>Featured Books</h2>
+  <ul *ngIf="books.length > 0">
+    <li *ngFor="let book of books" class="book-card">
+      <img [src]="book.coverImageUrl" alt="{{ book.title }} cover" />
+      <h3>{{ book.title }}</h3>
+      <p>{{ book.author }}</p>
+    </li>
+  </ul>
+  <p *ngIf="books.length === 0">No featured books available.</p>
+</div>

@@ -8,6 +8,7 @@ import { IdentityLoginRequest } from '../dtos/requests/identity-login-request';
 import { IdentityRegistrationRequest } from '../dtos/requests/identity-registration-request';
 import { AuthResponse } from '../dtos/responses/auth-response';
 import { IdentityResult } from '../dtos/responses/identity-result';
+import {AppEventManager} from './app-event-manager';
 
 @Injectable({
   providedIn: 'root'

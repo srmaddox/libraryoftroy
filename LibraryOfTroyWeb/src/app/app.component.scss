@@ -23,10 +23,10 @@
     ".  .    .    .    .    .    .    .    .    .    .    .    .    ." 1fr
     ".  HEAD HEAD HEAD HEAD HEAD HEAD HEAD CART CART CART CART CART ." 1fr
     ".  SRCH SRCH SRCH SRCH SRCH SRCH SRCH CART CART CART CART CART ." 1fr
-    ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT CART CART CART CART CART ." 2fr
     ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr
     ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr
-    ".  FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT FOOT ." 1fr
+    ".  RSLT RSLT RSLT RSLT RSLT RSLT RSLT FEAT FEAT FEAT FEAT FEAT ." 2fr
+    ".  FOOT FOOT FOOT FOOT FOOT FOOT FOOT FEAT FEAT FEAT FEAT FEAT ." 1fr
    /2fr 1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  1fr  2fr;
     gap: 2em;
   }
@@ -130,12 +130,16 @@
 /* Add this to app.component.scss */
 
 .auth-container {
+  z-index:3;
+  top:0;
+  left:0;
+  position: absolute;
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e5e8ee;
+  background-color: #333355cc;
 }
 
 /* Style updates for login/register container to make it look better */

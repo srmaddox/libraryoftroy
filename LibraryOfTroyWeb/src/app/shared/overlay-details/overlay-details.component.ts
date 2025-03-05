@@ -1,5 +1,3 @@
-// Update overlay-details.component.ts to handle authentication
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -29,7 +27,6 @@ export class OverlayDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Check authentication state
     this.isAuthenticated = this.authService.isAuthenticated();
 
     this.subscriptions.add(
@@ -49,7 +46,6 @@ export class OverlayDetailsComponent implements OnInit, OnDestroy {
 
   checkoutBook(): void {
     if (!this.isAuthenticated) {
-      // Redirect to login if not authenticated
       this.closeOverlay();
       this.router.navigate(['/login'], {
         queryParams: { returnUrl: this.router.url }

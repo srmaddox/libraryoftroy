@@ -1,11 +1,6 @@
 <!-- Updated src/app/shared/nav-footer/nav-footer.component.html -->
 <footer>
   <ul class="user">
-    <!-- Show Sign-In only for unauthenticated users -->
-    <li *ngIf="!isAuthenticated">
-      <a [routerLink]="['/login']">Sign-In</a>
-    </li>
-
     <!-- Show My Borrows only for authenticated users -->
     <li *ngIf="isAuthenticated">
       <a href="javascript:void(0)" (click)="viewMyBorrows()">My Borrows</a>

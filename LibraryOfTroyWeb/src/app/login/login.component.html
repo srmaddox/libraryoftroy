@@ -1,5 +1,4 @@
-<!-- Updated login.component.html -->
-<div class="login-container">
+<div class="login-container" (clickOutside)="navigateToHome()">
   <div class="login-card">
     <h2>Login to Library of Troy</h2>
 
@@ -48,6 +47,7 @@
       </div>
 
       <div class="form-group">
+        <button type="button" class="cancel-button" [routerLink]="['/home']">Cancel</button>
         <button type="submit" [disabled]="loading" class="submit-button">
           <span *ngIf="loading" class="spinner"></span>
           Login

@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription, filter } from 'rxjs';
 
 import { BookDetailResponse } from './dtos/responses/book-detail-response';
+import { FeaturedBooksComponent} from './shared/featured-books/featured-books.component';
 
 import {
   AppEventManager,
@@ -24,6 +25,7 @@ import {
   imports: [
     CommonModule,
     RouterOutlet,
+    FeaturedBooksComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -103,6 +105,16 @@ export class AppComponent implements OnInit, OnDestroy {
             this.overlayVisibility[event.payload] = false;
             break;
         }
+      })
+    );
+
+    // Subscribe to UI refresh events
+    this.subscriptions.add(
+      this.eventManager.uiRefreshBus$.subscribe(() => {
+        // Update auth-dependent UI elements
+        const currentUrl = this.router.url;
+        this.isAuthPage = currentUrl.includes('/login') || currentUrl.includes('/register');
+        this.cdr.detectChanges();
       })
     );
   }

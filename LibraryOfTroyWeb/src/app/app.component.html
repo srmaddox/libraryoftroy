@@ -1,4 +1,4 @@
-<div id="layout" class="layout" *ngIf="!isAuthPage">
+<div id="layout" class="layout">
   <div id="nav-header" class="nav-header">
     <router-outlet name="headerPane"></router-outlet>
   </div>
@@ -16,7 +16,7 @@
   </div>
 
   <div id="featured-books" class="featured-books">
-    <router-outlet name="featurePane"></router-outlet>
+    <app-featured-books [count]="1"></app-featured-books>
   </div>
 
   <div id="nav-footer" class="nav-footer">
@@ -29,7 +29,7 @@
   <router-outlet></router-outlet>
 </div>
 
-<div id="overlay" class="overlay" *ngIf="!isAuthPage">
+<div id="overlay" class="overlay">
   <div id="overlay-header" class="overlay-header" [class.active]="overlayVisibility['header']">
     <router-outlet name="headerOverlayPane"></router-outlet>
   </div>

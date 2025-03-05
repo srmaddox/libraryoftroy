@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth-service';
 import { IdentityLoginRequest } from '../dtos/requests/identity-login-request';
+import {ClickOutsideDirective} from '../directives/click-outside.directive';
+import {EventManager} from '@angular/platform-browser';
+import {AppEventManager} from '../services/app-event-manager';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ClickOutsideDirective],
   templateUrl: './login.component.html',
-  styleUrl: '../styles/auth-forms.scss'
+  styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -23,7 +26,9 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private eventManager: AppEventManager,
+    private cdr: ChangeDetectorRef,
   ) {
     this.loginForm = this.formBuilder.group({
       userName: ['', [Validators.required, Validators.email]],
@@ -62,7 +67,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginRequest)
       .subscribe({
         next: () => {
-          this.navigateToHome();
+          this.loading = false;
+          this.router.navigate(['/home']).then(() => {
+            this.cdr.detectChanges();
+          });
+
         },
         error: error => {
           this.error = error.message || 'Invalid credentials';
@@ -71,7 +80,11 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  private navigateToHome(): void {
+  close(): void {
+    this.navigateToHome();
+  }
+
+  public navigateToHome(): void {
     this.router.navigate([{
       outlets: {
         headerPane: ['nav-header'],

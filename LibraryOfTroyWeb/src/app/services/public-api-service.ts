@@ -11,12 +11,14 @@ import { BookDetailAndReviewsResponse } from '../dtos/responses/book-detail-and-
 })
 export class PublicApiService {
   private apiUrl = 'https://localhost:7023/api/Public';
+  private coverImageBaseUrl = 'books/';
 
   constructor(private http: HttpClient) {}
 
   getBook(bookId: Guid): Observable<BookDetailResponse | null> {
     return this.http.get<BookDetailResponse>(`${this.apiUrl}/Books/${bookId}`)
       .pipe(
+        map(book => this.transformBookCoverUrl(book)),
         catchError(() => of(null))
       );
   }
@@ -24,6 +26,12 @@ export class PublicApiService {
   getBookReviews(bookId: Guid): Observable<BookDetailAndReviewsResponse | null> {
     return this.http.get<BookDetailAndReviewsResponse>(`${this.apiUrl}/Books/${bookId}/Reviews`)
       .pipe(
+        map(response => {
+          if (response.bookDetailResponse) {
+            response.bookDetailResponse = this.transformBookCoverUrl(response.bookDetailResponse);
+          }
+          return response;
+        }),
         catchError(() => of(null))
       );
   }
@@ -47,6 +55,10 @@ export class PublicApiService {
     ).pipe(
       map(response => {
         const processedBooks = response.books.map(book => {
+          // Transform cover image URL
+          book = this.transformBookCoverUrl(book);
+
+          // Handle property name discrepancy
           if (book.available === undefined && book.Available !== undefined) {
             book.available = book.Available;
           }
@@ -68,5 +80,38 @@ export class PublicApiService {
       })
     );
   }
-}
+  getFeaturedBooks(): Observable<BookDetailResponse[]> {
+    return this.http.get<BookDetailResponse[]>(`${this.apiUrl}/featured`)
+      .pipe(
+        map(response => {
+          const processedBooks = response.map(book => {
+            // Transform cover image URL
+            book = this.transformBookCoverUrl(book);
 
+            // Handle property name discrepancy
+            if (book.available === undefined && book.Available !== undefined) {
+              book.available = book.Available;
+            }
+            return book;
+          });
+
+          return processedBooks;
+        }),
+        catchError(() => of([]))
+      );
+  }
+  /**
+   * Transform the cover image URL for a book by prepending the base URL if needed
+   */
+  private transformBookCoverUrl(book: BookDetailResponse): BookDetailResponse {
+    if (book.coverImageUrl) {
+      // If URL is not absolute and doesn't already have the base path
+      if (!book.coverImageUrl.startsWith('http://') &&
+        !book.coverImageUrl.startsWith('https://') &&
+        !book.coverImageUrl.startsWith(this.coverImageBaseUrl)) {
+        book.coverImageUrl = this.coverImageBaseUrl + book.coverImageUrl;
+      }
+    }
+    return book;
+  }
+}

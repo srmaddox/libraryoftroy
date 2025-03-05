@@ -1,10 +1,11 @@
 // Updated nav-header.component.ts
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { AppEventManager } from '../../services/app-event-manager';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-nav-header',
@@ -13,9 +14,10 @@ import { ClickOutsideDirective } from '../../directives/click-outside.directive'
   templateUrl: './nav-header.component.html',
   styleUrl: './nav-header.component.scss'
 })
-export class NavHeaderComponent implements OnInit {
+export class NavHeaderComponent implements OnInit, OnDestroy {
   isUserMenuOpen: boolean = false;
   isAuthenticated: boolean = false;
+  private subscriptions = new Subscription();
 
   constructor(
     public authService: AuthService,
@@ -23,10 +25,18 @@ export class NavHeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Initialize authentication state
     this.isAuthenticated = this.authService.isAuthenticated();
 
-    // Subscribe to auth state changes if needed
+    this.subscriptions.add(
+      this.eventManager.uiRefreshBus$.subscribe(() => {
+        this.isAuthenticated = this.authService.isAuthenticated();
+        this.closeUserMenu();
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   toggleUserMenu(): void {
@@ -39,6 +49,7 @@ export class NavHeaderComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.eventManager.refreshUI();
     this.closeUserMenu();
   }
 

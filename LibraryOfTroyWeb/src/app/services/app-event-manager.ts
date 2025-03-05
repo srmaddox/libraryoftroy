@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {ChangeDetectorRef, Injectable} from '@angular/core';
 import { Subject } from 'rxjs';
 import { BookDetailResponse } from '../dtos/responses/book-detail-response';
 import { Router } from '@angular/router';
@@ -29,6 +29,9 @@ export class AppEventManager {
 
   private refreshSearchBus = new Subject<void>();
   refreshSearchBus$ = this.refreshSearchBus.asObservable();
+
+  private uiRefreshBus = new Subject<void>();
+  uiRefreshBus$ = this.uiRefreshBus.asObservable();
 
   selectedBook: BookDetailResponse | undefined;
   lastSearchQuery: string = '';
@@ -103,6 +106,28 @@ export class AppEventManager {
   navigateToBorrowedBookManager(): void {
     this.showOverlay("rightOverlayPane");
     this.setPanelOutput('rightOverlayPane', 'borrowed-book-manager');
+  }
+
+  refreshUI(): void {
+    this.hideOverlay("rightOverlayPane");
+    this.hideOverlay("header");
+    this.hideOverlay("tool");
+    this.hideOverlay("result");
+    this.hideOverlay("footer");
+
+    this.router.navigate([{
+      outlets: {
+        headerPane: ['nav-header'],
+        cornerPane: ['library-bag'],
+        toolsPane: ['search-query'],
+        resultsPane: ['search-results'],
+        featurePane: ['featured-books'],
+        footerPane: ['nav-footer']
+      }
+    }]);
+
+    this.emitSearchResultsInvalidated();
+    this.uiRefreshBus.next();
   }
 
 
