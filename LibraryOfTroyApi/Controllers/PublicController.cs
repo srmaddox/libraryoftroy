@@ -14,6 +14,7 @@ using System.Diagnostics;
 using Srm.Soundex;
 using LibraryOfTroyApi.Utilities;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LibraryOfTroyApi.Controllers;
 /// <summary>
@@ -26,11 +27,32 @@ namespace LibraryOfTroyApi.Controllers;
 
 [Route ( "api/[controller]" )]
 [ApiController]
-public class PublicController ( LibraryDbContext context, ILogger<PublicController> logger ) : ControllerBase {
+public class PublicController ( LibraryDbContext _context, ILogger<PublicController> _logger, IMemoryCache _cache ) : ControllerBase {
+    private static readonly string CacheKey = "FeaturedBooks";
+    private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(12);
+
     [HttpGet ( "test" )]
     public IActionResult TestPublic ( ) {
         return Ok ( new { message = "Public controller is accessible to anyone" } );
     }
+
+    [HttpGet ( "featured" )]
+    public async Task<IActionResult> GetFeaturedBooks ( ) {
+        if ( !_cache.TryGetValue ( CacheKey, out List<Book> featuredBooks ) ) {
+            _logger.LogInformation ( "Cache miss for featured books. Fetching new set." );
+            featuredBooks = await _context.Books
+                .OrderBy ( b => Guid.NewGuid ( ) )
+                .Take ( 4 )
+                .ToListAsync ( );
+
+            _cache.Set ( CacheKey, featuredBooks, CacheDuration );
+        } else {
+            _logger.LogInformation ( "Cache hit for featured books." );
+        }
+
+        return Ok ( featuredBooks );
+    }
+
     /// <summary>
     /// Retrieves a specific book by its unique identifier.
     /// </summary>
@@ -49,18 +71,18 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
     [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "<Not yet optimize>" )]
     public async Task<IActionResult> GetBook ( string bookId ) {
         if ( string.IsNullOrEmpty ( bookId ) ) {
-            logger.LogTrace ( "Caller tried to GetBook with a null Guid." );
+            _logger.LogTrace ( "Caller tried to GetBook with a null Guid." );
             return BadRequest ( "Must include a Guid in request URI" );
         }
 
         if ( !Guid.TryParse ( bookId, null, out Guid bookIdGuid ) ) {
-            logger.LogTrace ( "Caller tried to GetBook with an invalid Guid." );
+            _logger.LogTrace ( "Caller tried to GetBook with an invalid Guid." );
             return BadRequest ( "Invalid Guid." );
         }
 
         try {
 
-            if ( await context.FindAsync<Book> ( bookIdGuid ) is not Book book ) {
+            if ( await _context.FindAsync<Book> ( bookIdGuid ) is not Book book ) {
                 return NotFound ( );
             }
 
@@ -68,7 +90,7 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
 
             return Ok ( bookDetail );
         } catch ( Exception ex ) {
-            logger.LogError ( $"Unhandled exception occurred:\n{ex}" );
+            _logger.LogError ( $"Unhandled exception occurred:\n{ex}" );
             return StatusCode ( 500, "An unexpected error occurred." );
         }
     }
@@ -82,18 +104,18 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
     [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "HAA0601:Value type to reference type conversion causing boxing allocation", Justification = "<Not yet optimize>" )]
     public async Task<IActionResult> GetBookReviews ( string bookId ) {
         if ( string.IsNullOrEmpty ( bookId ) ) {
-            logger.LogTrace ( "Caller tried to GetBook with a null Guid." );
+            _logger.LogTrace ( "Caller tried to GetBook with a null Guid." );
             return BadRequest ( "Must include a Guid in request URI" );
         }
 
         if ( !Guid.TryParse ( bookId, null, out Guid bookIdGuid ) ) {
-            logger.LogTrace ( "Caller tried to GetBook with an invalid Guid." );
+            _logger.LogTrace ( "Caller tried to GetBook with an invalid Guid." );
             return BadRequest ( "Invalid Guid." );
         }
 
         try {
             // Use Include to explicitly load the CustomerReviews navigation property
-            Book? book = await context.Books
+            Book? book = await _context.Books
             .Include(b => b.CustomerReviews)
             .FirstOrDefaultAsync(b => b.Id == bookIdGuid);
 
@@ -104,7 +126,7 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
             BookDetailAndReviewsResponse bookAndReviewDetail = BookDetailAndReviewsResponse.Factory.FromBook(book);
             return Ok ( bookAndReviewDetail );
         } catch ( Exception ex ) {
-            logger.LogError ( $"Unhandled exception occurred:\n{ex}" );
+            _logger.LogError ( $"Unhandled exception occurred:\n{ex}" );
             return StatusCode ( 500, "An unexpected error occurred." );
         }
     }
@@ -169,7 +191,7 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
                 return Ok ( builder.Build ( ) );
             }
         } catch ( Exception ex ) {
-            logger.LogError ( $"An unknown error occured during ListBooks call:\n{ex}" );
+            _logger.LogError ( $"An unknown error occured during ListBooks call:\n{ex}" );
             return StatusCode ( 500, "An unknown error occurred." );
         }
     }
@@ -178,7 +200,7 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
         try {
             // First apply Include
             Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Book, ICollection<CheckOutEvent>> query =
-                context.Books.Include(b => b.CheckOutEvents);
+                _context.Books.Include(b => b.CheckOutEvents);
 
             // Then apply sorting to the IQueryable result (not to the IIncludableQueryable)
             IQueryable<Book> sortedQuery = ApplyStandardSorting(query);
@@ -219,7 +241,7 @@ public class PublicController ( LibraryDbContext context, ILogger<PublicControll
             }
 
             // Build the base query
-            var query = context.Books.AsQueryable();
+            var query = _context.Books.AsQueryable();
 
             // Apply author filtering if specified
             if ( authorSpecs.Count > 0 ) {

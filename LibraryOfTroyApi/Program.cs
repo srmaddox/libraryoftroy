@@ -35,7 +35,6 @@ public class Program {
                 Description = "An API for managing a library's books and customer reviews"
             } );
 
-            // Configure JWT authentication for Swagger
             options.AddSecurityDefinition ( "Bearer", new OpenApiSecurityScheme {
                 Name = "Authorization",
                 Type = SecuritySchemeType.ApiKey,
@@ -61,7 +60,6 @@ public class Program {
             } );
 
             try {
-                // Include XML comments if available
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
                 if ( File.Exists ( xmlPath ) ) {
@@ -73,6 +71,8 @@ public class Program {
 
             options.EnableAnnotations ( );
         } );
+
+        builder.Services.AddMemoryCache ( );
 
         builder.Services.AddDbContext<LibraryDbContext> ( options =>
             options.UseSqlServer ( builder.Configuration.GetConnectionString ( "DefaultConnection" ) ) );
@@ -88,7 +88,6 @@ public class Program {
             .AddEntityFrameworkStores<LibraryDbContext> ( )
             .AddDefaultTokenProviders ( );
 
-        // Add JWT Authentication
         builder.Services.AddAuthentication ( options => {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -119,7 +118,6 @@ public class Program {
             logging.AddDebug ( );
         } );
 
-        // Add CORS policy
         builder.Services.AddCors ( options => {
             options.AddPolicy ( "AllowAngularDevClient",
                 builder => builder
@@ -130,7 +128,6 @@ public class Program {
 
         WebApplication app = builder.Build();
         app.UseSwagger ( options => {
-            // Customize Swagger JSON generation if needed
             options.RouteTemplate = "api-docs/{documentName}/swagger.json";
         } );
 
@@ -149,7 +146,6 @@ public class Program {
 
         logger.LogInformation ( "LibraryOfTroyApi application has started and is logging to Event Viewer!" );
 
-        // Create default roles and admin user
         using ( var scope = app.Services.CreateScope ( ) ) {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -162,11 +158,8 @@ public class Program {
             app.MapOpenApi ( );
         }
 
-        // Use CORS policy
         app.UseCors ( "AllowAngularDevClient" );
         app.UseHttpsRedirection ( );
-
-        // Add authentication middleware
         app.UseAuthentication ( );
         app.UseAuthorization ( );
 
@@ -174,7 +167,6 @@ public class Program {
         app.Run ( );
     }
 
-    // Method to create default roles and admin user
     private static async Task CreateDefaultRolesAndAdmin (
         RoleManager<IdentityRole> roleManager,
         UserManager<ApplicationUser> userManager,
@@ -188,7 +180,6 @@ public class Program {
             }
         }
 
-        // Create admin user if it doesn't exist
         var adminEmail = "admin@libraryoftroy.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -204,10 +195,8 @@ public class Program {
 
             var result = await userManager.CreateAsync(admin, "Admin123!");
             if ( result.Succeeded ) {
-                // Add admin to Admin and Librarian roles
                 await userManager.AddToRolesAsync ( admin, new [] { "Admin", "Librarian" } );
 
-                // Create a corresponding Customer record
                 var customer = new Customer
                 {
                     Id = Guid.NewGuid(),
@@ -217,7 +206,6 @@ public class Program {
                 dbContext.Customers.Add ( customer );
                 await dbContext.SaveChangesAsync ( );
 
-                // Link Customer to ApplicationUser
                 admin.CustomerId = customer.Id;
                 await userManager.UpdateAsync ( admin );
 
@@ -229,114 +217,3 @@ public class Program {
         }
     }
 }
-
-// TODO: Ensure -- New-EventLog -LogName Application -Source "LibraryOfTroyApi"
-// is set.
-/*
-using LibraryOfTroyApi.Data;
-
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using LibraryOfTroyApi.DTOs;
-using System.Diagnostics;
-
-namespace LibraryOfTroyApi;
-[System.Diagnostics.CodeAnalysis.SuppressMessage ( "DocumentationHeader", "ClassDocumentationHeader:The class must have a documentation header.", Justification = "<Not documenting Program boilerplate>" )]
-public class Program {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "Performance", "HAA0301:Closure Allocation Source", Justification = "<Not documenting Program boilerplate>" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage ( "DocumentationHeader", "MethodDocumentationHeader:The method must have a documentation header.", Justification = "<Not documenting Program boilerplate>" )]
-    public static void Main ( string [] args ) {
-        string logFilePath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\TroyLog.txt");
-        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddControllers ( ).AddNewtonsoftJson ( options => {
-            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-        } );
-
-        builder.Services.AddEndpointsApiExplorer ( );
-        builder.Services.AddSwaggerGen ( options => {
-            options.SwaggerDoc ( "v1", new OpenApiInfo {
-                Title = "Library of Troy API",
-                Version = "v1",
-                Description = "An API for managing a library's books and customer reviews"
-            } );
-
-            try {
-                // Include XML comments if available
-                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
-                if ( File.Exists ( xmlPath ) ) {
-                    options.IncludeXmlComments ( xmlPath );
-                }
-            } catch ( Exception ex ) {
-                Debug.WriteLine ( $"Exception handled during XML comment inclusion into swagger, XMLComments will not be used for swagger generation:\n{ex}" );
-            }
-
-            options.EnableAnnotations ( );
-        } );
-
-        builder.Services.AddDbContext<LibraryDbContext> ( options =>
-            options.UseSqlServer ( builder.Configuration.GetConnectionString ( "DefaultConnection" ) ) );
-
-        builder.Services.AddLogging ( logging => {
-            logging.ClearProviders ( );
-            logging.AddEventLog ( options => {
-                options.SourceName = "LibraryOfTroyApi";
-                options.LogName = "LibraryOfTroy";
-            } );
-            logging.AddConsole ( options => { } );
-            logging.AddDebug ( );
-        } );
-
-        // Add CORS policy
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAngularDevClient", 
-                builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-        });
-
-        WebApplication app = builder.Build();
-        app.UseSwagger ( options => {
-            // Customize Swagger JSON generation if needed
-            options.RouteTemplate = "api-docs/{documentName}/swagger.json";
-        } );
-
-        app.UseSwaggerUI ( options => {
-            options.SwaggerEndpoint ( "/api-docs/v1/swagger.json", "Library of Troy API v1" );
-            options.RoutePrefix = "api-docs";
-            options.DocumentTitle = "Library of Troy API Documentation";
-            options.DefaultModelsExpandDepth ( 2 );
-            options.DefaultModelRendering ( Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model );
-            options.DocExpansion ( Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List );
-            options.EnableDeepLinking ( );
-            options.DisplayRequestDuration ( );
-        } );
-
-        ILogger<Program> logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-        logger.LogInformation ( "LibraryOfTroyApi application has started and is logging to Event Viewer!" );
-
-        if ( app.Environment.IsDevelopment ( ) ) {
-            app.MapOpenApi ( );
-        }
-
-        // Use CORS policy
-        app.UseCors("AllowAngularDevClient");
-        app.UseHttpsRedirection ( );
-        app.UseAuthorization ( );
-        app.MapControllers ( );
-        app.Run ( );
-    }
-}
-
-// TODO: Ensure -- New-EventLog -LogName Application -Source "LibraryOfTroyApi"
-// is set.
-
-*/

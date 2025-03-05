@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using LibraryOfTroyApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace LibraryOfTroyApi.Controllers;
 [Route ( "api/[controller]" )]
@@ -132,52 +133,59 @@ public class CustomerController ( LibraryDbContext context, ILogger<CustomerCont
     /// <response code="409">Returns when the book is not available for checkout</response>
     /// <response code="500">Returns when an unexpected error occurs during processing</response>
     [HttpPost ( "Books/{bookId}/CheckOut" )]
-    [ProducesResponseType ( StatusCodes.Status200OK )]
-    [ProducesResponseType ( StatusCodes.Status400BadRequest )]
-    [ProducesResponseType ( StatusCodes.Status404NotFound )]
-    [ProducesResponseType ( StatusCodes.Status409Conflict )]
-    [ProducesResponseType ( StatusCodes.Status500InternalServerError )]
-    public async Task<IActionResult> CheckOutBook ( string bookId, [FromBody] CheckOutRequest request ) {
-        if ( request is null ) {
-            logger.LogTrace ( "Caller tried to CheckOutBook with a null request." );
-            return BadRequest ( "Must include checkout details in the request body." );
-        }
-
-        if ( string.IsNullOrEmpty ( bookId ) ) {
-            logger.LogTrace ( "Caller tried to CheckOutBook with a null Guid." );
-            return BadRequest ( "Must include a valid book ID in the request URI." );
-        }
-
-        if ( !Guid.TryParse ( bookId, out Guid bookIdGuid ) ) {
-            logger.LogTrace ( "Caller tried to CheckOutBook with an invalid Guid." );
+    public async Task<IActionResult> CheckOutBook ( string bookId ) {
+        if ( string.IsNullOrEmpty ( bookId ) || !Guid.TryParse ( bookId, out Guid bookIdGuid ) ) {
+            logger.LogTrace ( "Invalid book ID format." );
             return BadRequest ( "Invalid book ID format." );
         }
 
         try {
-            // Find the book including its checkout events
-            var book = await context.Books
-            .Include(b => b.CheckOutEvents)
-            .FirstOrDefaultAsync(b => b.Id == bookIdGuid);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if ( string.IsNullOrEmpty ( userIdClaim ) ) {
+                logger.LogTrace ( "User ID not found in token." );
+                return BadRequest ( "User identity not found." );
+            }
+
+            if ( User is null ) {
+                logger.LogTrace ( "User is null." );
+                return Unauthorized ( "User is not authenticated." );
+            }
+
+            if ( User.Identity is null ) {
+                logger.LogTrace ( "User identity is null." );
+                return Unauthorized ( "User identity not found." );
+            }
+
+            Customer? customer = await context.Customers
+            .FirstOrDefaultAsync(c => c.UserName == User.Identity.Name);
+
+            if ( customer == null ) {
+                logger.LogTrace ( $"Customer not found for user: {User.Identity.Name}" );
+                return BadRequest ( "No customer profile found for current user." );
+            }
+
+            // Find the book
+            Book? book = await context.Books
+                .Include(b => b.CheckOutEvents)
+                .FirstOrDefaultAsync(b => b.Id == bookIdGuid);
 
             if ( book is null ) {
-                logger.LogTrace ( $"Caller tried to check out non-existent book ID: {bookIdGuid}" );
                 return NotFound ( $"Book with ID {bookIdGuid} not found." );
             }
 
-            // Check if the book is available
+            // Check if available
             if ( !book.IsAvailable ) {
-                logger.LogTrace ( $"Caller tried to check out book ID: {bookIdGuid} which is not available" );
                 return Conflict ( $"Book with ID {bookIdGuid} is not available for checkout." );
             }
 
-            // Create and save the checkout event
+            // Create the checkout event
             var checkOutEvent = new CheckOutEvent
         {
                 Id = Guid.NewGuid(),
                 BookId = bookIdGuid,
-                CustomerId = request.CustomerId, // This assumes the request contains a CustomerId
+                CustomerId = customer.Id,
                 CheckoutDateTime = DateTime.Now,
-                ReturnDateTime = null // No return date since we're checking out
+                ReturnDateTime = null
             };
 
             await context.CheckOuts.AddAsync ( checkOutEvent );
